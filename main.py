@@ -1,7 +1,7 @@
 # StopLightSim.py
-# Name:
-# Date:
-# Assignment:
+# Name: Jenna Kramer
+# Date: 4/18
+# Assignment: Lab 11
 
 import simpy
 
@@ -30,9 +30,17 @@ def car(env, car_id):
     """Simulates a car arriving and waiting for the light."""
     
     print("Car", car_id, "arrived at", env.now)
+    parking_duration = 5
+    yield env.timeout(parking_duration)
 
     # TODO: Make the car wait while the light is red
     # Hint: use a loop and env.timeout(1)
+    while True:
+        if greenLight == False: 
+            print("Car", car_id, "is waiting")
+            yield env.timeout(1)
+        else: 
+            break 
 
     print("Car", car_id, "departed at", env.now)
 
@@ -47,6 +55,7 @@ def carArrival(env):
         print("Creating Car", car_id)
 
         # TODO: Start a new car process
+        env.process(car(env, car_id))
 
         yield env.timeout(5)
 
@@ -58,7 +67,7 @@ def main():
     env.process(stopLight(env))
     
     # TODO: Start the carArrival process
-
+    env.process(carArrival(env))
     # Run simulation
     env.run(until=100)
 
